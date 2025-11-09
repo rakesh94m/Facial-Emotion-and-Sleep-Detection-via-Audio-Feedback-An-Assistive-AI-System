@@ -7,10 +7,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 import matplotlib.pyplot as plt
 import os
 
-# ======================
 # 1. DATA PREPARATION
-# ======================
-# Verify dataset paths exist
+
 train_data_dir = "/content/dataset/facial_emotion_split/train"
 validation_data_dir = "/content/dataset/facial_emotion_split/validation"
 
@@ -60,9 +58,7 @@ if len(train_generator.class_indices) != 8:
     raise ValueError(f"Expected 8 classes, found {len(train_generator.class_indices)}")
 print("Classes:", train_generator.class_indices)
 
-# ======================
 # 2. MODEL ARCHITECTURE
-# ======================
 model = Sequential([
     # Block 1
     Conv2D(32, (3, 3), activation='relu', input_shape=(48, 48, 1)),
@@ -106,9 +102,7 @@ model.compile(
 )
 model.summary()
 
-# ======================
 # 3. TRAINING SETUP
-# ======================
 callbacks = [
     EarlyStopping(
         monitor='val_accuracy',  
@@ -130,9 +124,7 @@ callbacks = [
     )
 ]
 
-# ======================
 # 4. MODEL TRAINING
-# ======================
 history = model.fit(
     train_generator,
     steps_per_epoch=max(1, train_generator.samples // batch_size),
@@ -143,18 +135,13 @@ history = model.fit(
     verbose=1
 )
 
-# ======================
-# 5. EVALUATION & VISUALIZATION
-# ======================
-# Save final model
+
 model.save('emotion_model_final.keras')
 
-# Evaluation
 val_loss, val_acc = model.evaluate(validation_generator)
 print(f"\nFinal Validation Accuracy: {val_acc:.4f}")
 print(f"Final Validation Loss: {val_loss:.4f}")
 
-# Enhanced visualization
 plt.figure(figsize=(12, 5))
 
 plt.subplot(1, 2, 1)
@@ -176,4 +163,5 @@ plt.legend()
 
 plt.tight_layout()
 plt.savefig('training_metrics.png', dpi=300)
+
 plt.show()
